@@ -1,0 +1,509 @@
+openapi: 3.0.0
+servers:
+  - url: 'http://localhost:10010/api'
+  - url: 'https://localhost:10010/api'
+info:
+  version: "1.0.0-oas3"
+  title: Hello World App
+paths:
+  /hello:
+    x-swagger-router-controller: hello_world
+    get:
+      description: Returns 'Hello' to the caller
+      operationId: helloAction
+      parameters:
+        - name: name
+          in: query
+          description: The name of the person to whom to say hello
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HelloWorldResponse'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cafe:
+    x-swagger-router-controller: cafe
+    get:
+      description: get a cafe list
+      operationId: adminGetCafes
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - name: q
+          in: query
+          description: Fulltext search query
+          required: false
+          schema:
+            type: string
+        - name: ids
+          in: query
+          description: Get by ids
+          required: false
+          style: form
+          schema:
+            type: array
+            items:
+              type: string
+        - name: sorter
+          in: query
+          description: Define sort order
+          required: false
+          schema:
+            type: string
+            enum:
+              - name
+              - '-name'
+            default: '-name'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Cafe'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: add a new cafe to the list
+      operationId: adminCreateCafe
+      responses:
+        '200':
+          description: Successfully saved new cafe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cafe'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CafeCreate'
+        description: New cafe details to add
+        required: true
+  '/cafe/{cafeId}':
+    x-swagger-router-controller: cafe
+    parameters:
+      - $ref: '#/components/parameters/pathCafeId'
+    get:
+      operationId: adminGetCafe
+      responses:
+        '200':
+          description: Organization's profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cafe'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: adminUpdateCafe
+      responses:
+        '200':
+          description: 'Update organization''s profile, and return it'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cafe'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CafeUpdate'
+        description: data to update
+        required: true
+  /reklamacia:
+    x-swagger-router-controller: reklamacia
+    get:
+      description: get a reklamacia list
+      operationId: getReklamacie
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - name: q
+          in: query
+          description: Fulltext search query
+          required: false
+          schema:
+            type: string
+        - name: ids
+          in: query
+          description: Get by ids
+          required: false
+          style: form
+          schema:
+            type: array
+            items:
+              type: string
+        - name: sorter
+          in: query
+          description: Define sort order
+          required: false
+          schema:
+            type: string
+            enum:
+              - name
+              - '-name'
+            default: '-name'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Reklamacia'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      description: add a new reklamacia
+      operationId: createReklamacia
+      responses:
+        '200':
+          description: Successfully saved new cafe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reklamacia'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReklamaciaCreate'
+        description: New cafe details to add
+        required: true
+  '/reklamacia/{reklamaciaId}':
+    x-swagger-router-controller: reklamacia
+    parameters:
+      - $ref: '#/components/parameters/pathReklamaciaId'
+    get:
+      operationId: getReklamacia
+      responses:
+        '200':
+          description: Organization's profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reklamacia'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: updateReklamacia
+      responses:
+        '200':
+          description: 'Update organization''s profile, and return it'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reklamacia'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reklamacia'
+        description: data to update
+        required: true
+  /swagger:
+    x-swagger-pipe: swagger_raw
+components:
+  schemas:
+    HelloWorldResponse:
+      required:
+        - message
+      properties:
+        message:
+          type: string
+      type: object
+    Cafe:
+      properties:
+        name:
+          type: string
+          description: Cafe name
+        description:
+          type: string
+          description: Brief description of the cafe
+      additionalProperties: true
+      type: object
+    CafeCreate:
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          description: Cafe name
+        description:
+          type: string
+          description: Brief description of the cafe
+      additionalProperties: false
+      type: object
+    CafeUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+          minLength: 1
+      additionalProperties: false
+    Reklamacia:
+      properties:
+        reklamacne_cislo_JMP:
+          type: number
+          description: Reklamacne cislo JMP
+        rok_zaradenia:
+          type: number
+          description: Rok vytvorenia reklamacie
+        reklamacne_cislo_OBI:
+          type: string
+          description: Reklamacne cislo OBI
+        zakaznik:
+          type: string
+          description: Meno a priezvisko osoby
+        ulica:
+          type: string
+          description: Ulica
+        mesto:
+          type: string
+          description: Mesto
+        psc:
+          type: string
+          description: Postove smerove cislo
+        tel:
+          type: string
+          description: Telefonny kontakt
+        datum_uplatnenia_reklamacie:
+          type: string
+          format: date-time
+          description: Datum uplatnenia reklamacie
+        datum_odoslania_reklamacie:
+          type: string
+          format: date-time
+          description: Datum odoslania reklamacie
+        datum_predaja:
+          type: string
+          format: date-time
+          description: Datum predaja
+        znacka_stroja:
+          type: string
+          description: Znacka stroja
+        typ_stroja:
+          type: string
+          description: Typ stroja
+        modelove_cislo:
+          type: string
+          description: Modelove cislo stroja
+        vyrobne_cislo:
+          type: string
+          description: Vyrobne cislo stroja
+        kompletnost_stroja:
+          type: boolean
+          description: Kompletnost stroja
+        reklamovana_vada:
+          type: string
+          description: Popis reklamovanej vady
+        zistena_vada:
+          type: string
+          description: Skutocne zistena vada v servise
+        reklamacia:
+          type: boolean
+          description: Vyhodnotenie reklamacie uznana/neuznana
+        oprava:
+          type: string
+          description: Vykonana oprava na zariadeni
+      additionalProperties: true
+      type: object
+    ReklamaciaCreate:
+      type: object
+      required:
+        - reklamacne_cislo_JMP
+        - reklamacne_cislo_OBI
+        - zakaznik
+        - datum_predaja
+        - datum_uplatnenia_reklamacie
+        - datum_odoslania_reklamacie
+        - znacka_stroja
+        - typ_stroja
+        - modelove_cislo
+        - reklamovana_vada
+        - zistena_vada
+      properties:
+        reklamacne_cislo_JMP:
+          type: number
+        rok_zaradenia:
+          type: number
+        reklamacne_cislo_OBI:
+          type: string
+        zakaznik:
+          type: string
+        ulica:
+          type: string
+        mesto:
+          type: string
+        psc:
+          type: string
+        tel:
+          type: string
+        datum_uplatnenia_reklamacie:
+          type: string
+          format: date-time
+        datum_odoslania_reklamacie:
+          type: string
+          format: date-time
+        datum_predaja:
+          type: string
+          format: date-time
+        znacka_stroja:
+          type: string
+        typ_stroja:
+          type: string
+        modelove_cislo:
+          type: string
+        vyrobne_cislo:
+          type: string
+        kompletnost_stroja:
+          type: boolean
+        reklamovana_vada:
+          type: string
+        zistena_vada:
+          type: string
+        reklamacia:
+          type: boolean
+        oprava:
+          type: string
+      additionalProperties: false
+    Error:
+      properties:
+        statusCode:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        payload:
+          type: object
+          additionalProperties: true
+          nullable: true
+        userinfo:
+          type: string
+          description: Localized info
+      additionalProperties: true
+      type: object
+    UserPublicProfile:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        surname:
+          type: string
+        email:
+          $ref: '#/components/schemas/elementary.email'
+        phone:
+          type: string
+        sex:
+          $ref: '#/components/schemas/elementary.sex'
+        created_datetime:
+          type: string
+          format: date-time
+        username:
+          type: string
+    elementary.sex:
+      type: string
+      enum:
+        - M
+        - F
+        - null
+    elementary.email:
+      type: string
+      format: email
+  parameters:
+    limit:
+      name: limit
+      in: query
+      required: false
+      description: Limit for paginated results
+      schema:
+        type: integer
+        default: 100
+    offset:
+      name: offset
+      in: query
+      required: false
+      description: Offset for paginated results
+      schema:
+        type: integer
+        default: 0
+    pathCafeId:
+      name: cafeId
+      in: path
+      required: true
+      description: Cafe Id
+      schema:
+        type: string
+    pathReklamaciaId:
+      name: reklamaciaId
+      in: path
+      required: true
+      description: Reklamacia Id
+      schema:
+        type: string
